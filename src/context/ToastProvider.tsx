@@ -2,6 +2,7 @@ import { v4 as uuid4 } from 'uuid';
 import {type ReactNode, useState} from "react";
 import type {Toast} from "../types/types.ts";
 import {ToastContext} from "./ToastContext.tsx";
+import {ToastItem} from "../components/ToastItem.tsx";
 
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
@@ -20,6 +21,15 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return (
         <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
             {children}
+            <div>
+                {toasts.map((toast) => (
+                    <ToastItem
+                        key={toast.id}
+                        toast={toast}
+                        onRemove={removeToast}
+                    />
+                ))}
+            </div>
         </ToastContext.Provider>
     );
 };
