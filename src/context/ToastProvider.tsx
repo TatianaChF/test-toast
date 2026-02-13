@@ -14,7 +14,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
 
     const removeToast = (id: string) => {
-
+        setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
     };
 
     return (
