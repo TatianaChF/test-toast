@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {Toast} from '../types/types';
 
 interface ToastItemProps {
@@ -7,20 +7,34 @@ interface ToastItemProps {
 }
 
 export const ToastItem: React.FC<ToastItemProps> = ({toast, onRemove}) => {
+    const [isExiting, setIsExiting] = useState<boolean>(false);
+
+    const startTimer = () => {
+        const interval = setInterval(() => {
+            handleRemove();
+        }, toast.duration);
+
+        return () => clearInterval(interval);
+    }
+
+    const handleRemove = () => {
+        setIsExiting(true);
+
+        setTimeout(() => {
+            onRemove(toast.id);
+        }, 300);
+    }
+
     useEffect(() => {
         if (toast.duration) {
-            const interval = setInterval(() => {
-                onRemove(toast.id);
-            }, toast.duration);
-
-            return () => clearInterval(interval);
+            startTimer();
         }
-    }, []);
+    }, [toast.duration]);
 
     return (
-        <div className={`toast toast-${toast.type}`}>
+        <div className={`toast toast-${toast.type} ${isExiting ? 'toast-exit' : 'toast-enter'}`}>
             <span>{toast.message}</span>
-            <button onClick={() => onRemove(toast.id)}>x</button>
+            <button onClick={handleRemove}>x</button>
         </div>
     );
 };
