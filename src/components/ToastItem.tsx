@@ -1,10 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import type {Toast} from '../types/types';
-
-interface ToastItemProps {
-    toast: Toast;
-    onRemove: (id: string) => void;
-}
+import type {ToastItemProps} from "../types/types.ts";
 
 export const ToastItem: React.FC<ToastItemProps> = ({toast, onRemove}) => {
     const [isExiting, setIsExiting] = useState<boolean>(false);

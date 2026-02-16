@@ -12,3 +12,8 @@ export interface ToastContextType {
   addToast: (toast: Omit<Toast, 'id'>) => void;
   removeToast: (id: string) => void;
 }
+
+export interface ToastItemProps {
+  toast: Toast;
+  onRemove: (id: string) => void;
+}
