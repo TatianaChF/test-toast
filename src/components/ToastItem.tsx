@@ -8,11 +8,13 @@ interface ToastItemProps {
 
 export const ToastItem: React.FC<ToastItemProps> = ({toast, onRemove}) => {
     useEffect(() => {
-        const interval = setInterval(() => {
-            onRemove(toast.id);
-        }, toast.duration);
+        if (toast.duration) {
+            const interval = setInterval(() => {
+                onRemove(toast.id);
+            }, toast.duration);
 
-        return () => clearInterval(interval);
+            return () => clearInterval(interval);
+        }
     }, []);
 
     return (
