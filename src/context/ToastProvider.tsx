@@ -8,16 +8,18 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const addToast = (toast: Omit<Toast, 'id'>) => {
-        const duplicateToast = toasts.find((item) => {
-            return item.message === toast.message && item.type === toast.type;
+        setToasts((prevToasts) => {
+            const duplicateToast = prevToasts.find((item) => {
+                return item.message === toast.message && item.type === toast.type;
+            });
+
+            if (duplicateToast) return prevToasts;
+
+            const id: string = uuid4();
+            const newToast: Toast = {...toast, id};
+
+            return [...prevToasts, newToast];
         });
-
-        if (duplicateToast) return;
-
-        const id: string = uuid4();
-        const newToast: Toast = {...toast, id};
-
-        setToasts((prevToasts) => [...prevToasts, newToast]);
     };
 
     const removeToast = (id: string) => {
