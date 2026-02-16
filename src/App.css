@@ -90,6 +90,36 @@ button:hover {
   font-size: 1.2rem;
 }
 
+.toast-exit {
+  animation: slideOut 0.3s ease forwards;
+}
+
+.toast-enter {
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+}
+
 .toast-success { background: #10b981; }
 .toast-error { background: #ef4444; }
 .toast-warning { background: #f59e0b; }
