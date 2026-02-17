@@ -6,6 +6,7 @@ import {ToastItem} from "../components/ToastItem.tsx";
 
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
+    const [resetCounts, setResetCounts] = useState<Record<string, number>>({});
 
     const addToast = (toast: Omit<Toast, 'id'>) => {
         setToasts((prevToasts) => {
@@ -13,7 +14,13 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 return item.message === toast.message && item.type === toast.type;
             });
 
-            if (duplicateToast) return prevToasts;
+            if (duplicateToast) {
+                setResetCounts(prev => ({
+                    ...prev,
+                    [duplicateToast.id]: (prev[duplicateToast.id] || 0) + 1
+                }));
+                return prevToasts;
+            }
 
             const id: string = uuid4();
             const newToast: Toast = {...toast, id};
@@ -24,6 +31,11 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     const removeToast = (id: string) => {
         setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+        setResetCounts(prev => {
+            const newCounts = {...prev};
+            delete newCounts[id];
+            return newCounts;
+        });
     };
 
     return (
@@ -32,7 +44,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             <div className="toast-list">
                 {toasts.map((toast) => (
                     <ToastItem
-                        key={toast.id}
+                        key={`${toast.id}-${resetCounts[toast.id] || 0}`}
                         toast={toast}
                         onRemove={removeToast}
                     />
