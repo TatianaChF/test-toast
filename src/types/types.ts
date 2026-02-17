@@ -5,7 +5,7 @@ export interface Toast {
   message: string;
   type: ToastType;
   duration?: number;
-  resetCount: number;
+  resetCount?: number;
 }
 
 export interface ToastContextType {
