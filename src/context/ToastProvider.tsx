@@ -6,7 +6,6 @@ import {ToastItem} from "../components/ToastItem.tsx";
 
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
-    const [resetCounts, setResetCounts] = useState<Record<string, number>>({});
 
     const addToast = (toast: Omit<Toast, 'id'>) => {
         setToasts((prevToasts) => {
@@ -15,15 +14,15 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             });
 
             if (duplicateToast) {
-                setResetCounts(prev => ({
-                    ...prev,
-                    [duplicateToast.id]: (prev[duplicateToast.id] || 0) + 1
-                }));
-                return prevToasts;
+                return prevToasts.map((item) =>
+                    item.id === duplicateToast.id
+                        ? { ...item, duration: toast.duration, resetCount: item.resetCount + 1 }
+                        : item
+                );
             }
 
             const id: string = uuid4();
-            const newToast: Toast = {...toast, id};
+            const newToast: Toast = {...toast, id, resetCount: 0};
 
             return [...prevToasts, newToast];
         });
@@ -31,11 +30,6 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     const removeToast = (id: string) => {
         setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-        setResetCounts(prev => {
-            const newCounts = {...prev};
-            delete newCounts[id];
-            return newCounts;
-        });
     };
 
     return (
@@ -44,7 +38,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             <div className="toast-list">
                 {toasts.map((toast) => (
                     <ToastItem
-                        key={`${toast.id}-${resetCounts[toast.id] || 0}`}
+                        key={toast.id}
                         toast={toast}
                         onRemove={removeToast}
                     />

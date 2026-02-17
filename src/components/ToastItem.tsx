@@ -74,7 +74,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({toast, onRemove}) => {
         return () => {
             clearTimer();
         };
-    }, [toast.duration, isExiting]);
+    }, [toast.duration, isExiting, toast.resetCount]);
 
     return (
         <div
