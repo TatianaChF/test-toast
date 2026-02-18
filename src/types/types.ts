@@ -5,4 +5,16 @@ export interface Toast {
   message: string;
   type: ToastType;
   duration?: number;
+  resetCount?: number;
+}
+
+export interface ToastContextType {
+  toasts: Toast[];
+  addToast: (toast: Omit<Toast, 'id'>) => void;
+  removeToast: (id: string) => void;
+}
+
+export interface ToastItemProps {
+  toast: Toast;
+  onRemove: (id: string) => void;
 }
