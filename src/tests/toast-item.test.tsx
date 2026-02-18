@@ -4,7 +4,7 @@ import type {Toast} from "../types/types.ts";
 import {ToastItem} from "../components/ToastItem.tsx";
 import {act} from "react";
 
-describe('toast system', () => {
+describe('toast item tests', () => {
     beforeEach(() => {
         vi.useFakeTimers();
     });
@@ -14,7 +14,7 @@ describe('toast system', () => {
         vi.useRealTimers();
     });
 
-    describe('ToastItem component (unit tests)', () => {
+    describe('ToastItem component', () => {
         const mockToast: Toast = {
             id: "1",
             message: "Тестовый тост",
@@ -44,7 +44,7 @@ describe('toast system', () => {
             })
 
             expect(onRemove).toHaveBeenCalledTimes(1);
-            expect(onRemove).toHaveBeenCalledWith("1");
+            expect(onRemove).toHaveBeenCalledWith(mockToast.id);
         });
 
         it('pauses timer on mouse enter and resumes on mouse leave', () => {
@@ -101,6 +101,20 @@ describe('toast system', () => {
             });
 
             expect(onRemove).toHaveBeenCalledTimes(1);
+        });
+
+        it('calls onRemove before duration', () => {
+            render(<ToastItem toast={mockToast} onRemove={onRemove} />);
+
+            const closeButton = screen.getByRole('button', { name: 'x' });
+            fireEvent.click(closeButton);
+
+            act(() => {
+                vi.advanceTimersByTime(300);
+            })
+
+            expect(onRemove).toHaveBeenCalledTimes(1);
+            expect(onRemove).toHaveBeenCalledWith(mockToast.id);
         })
     });
 });
