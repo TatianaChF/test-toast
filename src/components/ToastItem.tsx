@@ -41,7 +41,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({toast, onRemove}) => {
     };
 
     const handlePause = () => {
-        if (!toast.duration || isExiting) return;
+        if (isExiting) return;
 
         if (!isPaused) {
             if (startTimeRef.current) {
@@ -62,19 +62,19 @@ export const ToastItem: React.FC<ToastItemProps> = ({toast, onRemove}) => {
     }, [onRemove]);
 
     useEffect(() => {
-        if (!toast.duration || isExiting) return;
+        if (isExiting) return;
 
-        remainingTimeRef.current = toast.duration;
+        remainingTimeRef.current = toast.duration || 3000;
         startTimeRef.current = Date.now();
 
         timerRef.current = setTimeout(() => {
             handleRemove();
-        }, toast.duration);
+        }, toast.duration || 3000);
 
         return () => {
             clearTimer();
         };
-    }, [toast.duration, isExiting]);
+    }, [toast.duration, isExiting, toast.resetCount]);
 
     return (
         <div
